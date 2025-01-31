@@ -2,7 +2,7 @@ package AStar;
 public class Board {
 
     private int[][] tiles;
-    private int dim;
+    private int N;
 
     public Board(int[][] tiles) {
         int dimension = tiles.length;
@@ -12,13 +12,17 @@ public class Board {
             }
         }
         this.tiles = tiles;
-        dim = dimension;
+        N = dimension;
+    }
+
+    public int dimension(){
+        return N;
     }
 
     public int hamming() {
         int count = 0;
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
                 if (tiles[i][j] != 0 && tiles[i][j] != i * tiles.length + j + 1) {
                     count++;
                 }
@@ -29,11 +33,11 @@ public class Board {
 
     public int manhattan() {
         int dist = 0;
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
                 if (tiles[i][j] != 0) {
-                    int targetRow = (tiles[i][j] - 1) / dim;
-                    int targetCol = (tiles[i][j] - 1) % dim;
+                    int targetRow = (tiles[i][j] - 1) / N;
+                    int targetCol = (tiles[i][j] - 1) % N;
                     dist += Math.abs(i - targetRow) + Math.abs(j - targetCol);
                 }
             }
@@ -47,8 +51,8 @@ public class Board {
             if (board.tiles.length != tiles.length) {
                 return false;
             } else {
-                for (int i = 0; i < dim; i++) {
-                    for (int j = 0; j < dim; j++) {
+                for (int i = 0; i < N; i++) {
+                    for (int j = 0; j < N; j++) {
                         if (tiles[i][j] != board.tiles[i][j]) {
                             return false;
                         }
@@ -61,14 +65,36 @@ public class Board {
         }
     }
 
-    public String toString() {
-        String str = "";
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
-                str += tiles[i][j] + " ";
+    public boolean isGoal() {
+        int obj=1;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if(tiles[i][j]!=obj){
+                    return false;
+                }
+                i++;
             }
-            str += "\n";
         }
-        return str;
+        return true;
+    }
+
+    public Board twin() {
+        return null;
+    }
+
+    public Iterable<Board> neighbors() {
+         return null;
+    }
+
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append(N + "\n");
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                s.append(String.format("%2d ", tiles[i][j]));
+            }
+            s.append("\n");
+        }
+        return s.toString();
     }
 }
