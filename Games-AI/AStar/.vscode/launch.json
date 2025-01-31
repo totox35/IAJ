@@ -1,0 +1,23 @@
+// filepath: /home/thomas/Documents/IAJ/Games-AI/.vscode/launch.json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "JUnit Test",
+            "request": "launch",
+            "mainClass": "org.junit.platform.console.ConsoleLauncher",
+            "args": [
+                "--select-class",
+                "AStar.BoardTest"
+            ],
+            "projectName": "games-ai"
+        }
+    ]
+}
