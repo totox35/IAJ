@@ -2,15 +2,23 @@ package AStar;
 public class Board {
 
     private int[][] tiles;
+    private int dim;
 
     public Board(int[][] tiles) {
+        int dimension = tiles.length;
+        for (int i = 0; i < dimension; i++) {
+            if (tiles[i].length != dimension) {
+                throw new IllegalArgumentException("Le tableau doit être de dimensions NxN");
+            }
+        }
         this.tiles = tiles;
+        dim = dimension;
     }
 
     public int hamming() {
         int count = 0;
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles.length; j++) {
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
                 if (tiles[i][j] != 0 && tiles[i][j] != i * tiles.length + j + 1) {
                     count++;
                 }
@@ -21,12 +29,11 @@ public class Board {
 
     public int manhattan() {
         int dist = 0;
-        int n = tiles.length;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
                 if (tiles[i][j] != 0) {
-                    int targetRow = (tiles[i][j] - 1) / n;
-                    int targetCol = (tiles[i][j] - 1) % n;
+                    int targetRow = (tiles[i][j] - 1) / dim;
+                    int targetCol = (tiles[i][j] - 1) % dim;
                     dist += Math.abs(i - targetRow) + Math.abs(j - targetCol);
                 }
             }
@@ -40,8 +47,8 @@ public class Board {
             if (board.tiles.length != tiles.length) {
                 return false;
             } else {
-                for (int i = 0; i < tiles.length; i++) {
-                    for (int j = 0; j < tiles.length; j++) {
+                for (int i = 0; i < dim; i++) {
+                    for (int j = 0; j < dim; j++) {
                         if (tiles[i][j] != board.tiles[i][j]) {
                             return false;
                         }
@@ -56,8 +63,8 @@ public class Board {
 
     public String toString() {
         String str = "";
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles.length; j++) {
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
                 str += tiles[i][j] + " ";
             }
             str += "\n";
