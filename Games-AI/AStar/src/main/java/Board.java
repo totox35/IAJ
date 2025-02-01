@@ -1,29 +1,38 @@
-package AStar;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
 
-    private int[][] tiles;
+    private byte[][] tiles;
     private int N;
     private int videI;
     private int videJ;
     private int manhattanValue = -1;
     private int hammingValue = -1;
 
-    public Board(int[][] tiles) {
-        int dimension = tiles.length;
-        for (int i = 0; i < dimension; i++) {
-            if (tiles[i].length != dimension) {
-                throw new IllegalArgumentException("Le tableau doit être de dimensions NxN");
-            }
-        }
-        this.tiles = tiles;
-        N = dimension;
+    public Board(int[][] blocks) {
+        N = blocks.length;
+        this.tiles = new byte[N][N];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (tiles[i][j] == 0) {
+                this.tiles[i][j] = (byte) blocks[i][j];
+                if (blocks[i][j] == 0) {
+                    videI = i;
+                    videJ = j;
+                }
+            }
+        }
+    }
+
+    public Board(byte[][] blocks) {
+        N = blocks.length;
+        this.tiles = new byte[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                this.tiles[i][j] = blocks[i][j];
+                if (blocks[i][j] == 0) {
                     videI = i;
                     videJ = j;
                 }
@@ -67,24 +76,24 @@ public class Board {
         return dist;
     }
 
-    public boolean equals(Object y) throws IllegalArgumentException {
-        if (y instanceof Board) {
-            Board board = (Board) y;
-            if (board.tiles.length != tiles.length) {
-                return false;
-            } else {
-                for (int i = 0; i < N; i++) {
-                    for (int j = 0; j < N; j++) {
-                        if (tiles[i][j] != board.tiles[i][j]) {
-                            return false;
-                        }
-                    }
-                }
-                return true;
+    public boolean equals(Object that) {
+        if (this == that)
+            return true;
+        if (that == null)
+            return false;
+        if (this.getClass() != that.getClass())
+            return false;
+        Board other = (Board) that;
+        if (this.N != other.N || this.videI != other.videI
+                || this.videJ != other.videJ)
+            return false;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (this.tiles[i][j] != other.tiles[i][j])
+                    return false;
             }
-        } else {
-            throw new IllegalArgumentException("L'objet passé en paramètre doit être une Board");
         }
+        return true;
     }
 
     //Méthode pour vérifier si le board est le but recherché : cad distance de Mahattan à 0
@@ -98,11 +107,11 @@ public class Board {
 
     //Méthode pour obtenir les voisins d'un board en réalisant un déplacement de notre case vide.
     //Au maximum on en récupère 4, un pour chaque direction possible : si on est au milieu.
-    public Iterable<Board> neighbors() {
-        List<Board> res = new ArrayList<Board>();
+    public ArrayList<Board> neighbors() {
+        ArrayList<Board> res = new ArrayList<Board>();
         Board next;
         //Si videI-1 > 0, alors on est sur la ligne du milieu ou du bas, donc on peut échanger avec un voisin du haut
-        if (videI - 1 > 0) {
+        if (videI - 1 >= 0) {
             next = new Board(tiles);
             swap(next, videI, videJ, videI - 1, videJ);
             next.videI = videI - 1;
@@ -116,7 +125,7 @@ public class Board {
             res.add(next);            
         }
         //Si videJ-1 > 0, alors on est sur la colonne du milieu ou de droite, donc on peut échanger avec un voisin de gauche
-        if(videJ - 1 > 0){
+        if(videJ - 1 >= 0){
             next = new Board(tiles);
             swap(next, videI, videJ, videI, videJ-1);
             next.videJ = videJ-1;
