@@ -1,4 +1,5 @@
 import edu.princeton.cs.algs4.*;
+
 import edu.princeton.cs.algs4.MinPQ;
 
 
@@ -39,6 +40,11 @@ public class Solver {
         aStar();
     }
 
+    /*
+    Méthode aStar : on ajoute chaque searchNode dans une priorityQ.
+    On vient retirer l'élement qui nous interesse à chaque itération,
+    et on rajoute ses voisins à la priorityQ.
+     */
     private void aStar() {
         MinPQ<SearchNode> priorityQueue = new MinPQ<SearchNode>();
         priorityQueue.insert(new SearchNode(null, initial, 0, heur(initial)));
@@ -46,7 +52,7 @@ public class Solver {
         while (!current.board.isGoal()) {
             for (Board neighbor : current.board.neighbors()) {
                 if(current.parent ==null || !neighbor.equals(current.parent.board)) {
-                    priorityQueue.insert(new SearchNode(current, neighbor, current.nbMoves + 1, heur(neighbor)));
+                    priorityQueue.insert(new SearchNode(current, neighbor, current.nbMoves + 1, current.priority+heur(neighbor)));
                 }
             }
             current = priorityQueue.delMin();
@@ -57,14 +63,25 @@ public class Solver {
         }
     }
 
+
+    /* En fonction de l'heuristique utilisée, on a des performances différentes
+    * Pour hamming, on va jusqu'à 33 moves de profondeur
+    * Pour manhattan, on va jusqu'à 40 moves de profondeur
+    */
     private int heur(Board b){
         return b.manhattan();
     }
 
+    /*
+    Retourne vrai ou faux en fonction de si la board est résolue
+     */
     public boolean isSolvable() {
         return solvable;
     }
 
+    /*
+    Retourne le nb de move pour atteindre cette solution
+     */
     public int moves() {
         if(!solvable){
             return -1;
@@ -72,6 +89,11 @@ public class Solver {
 	    return sol.nbMoves;
     }
 
+
+    /*
+    Si la grille a une solution, on va remonter les search node et les mettre dans une pile
+    pour ensuite afficher la solution
+     */
     public Iterable<Board> solution() {
         if(solvable){
             Stack<Board> res = new Stack<>();
@@ -86,13 +108,13 @@ public class Solver {
 
     public static void main(String[] args) {
         // create initial board from file
-//        In in = new In(args[0]);
-//        int N = in.readInt();
-//        int[][] blocks = new int[N][N];
-//        for (int i = 0; i < N; i++)
-//            for (int j = 0; j < N; j++)
-//                blocks[i][j] = in.readInt();
-        Board initial = new Board(new int[][]{{8, 1, 3}, {4, 0, 2}, {7, 6, 5}});
+        In in = new In(args[0]);
+        int N = in.readInt();
+        int[][] blocks = new int[N][N];
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+                blocks[i][j] = in.readInt();
+        Board initial = new Board(blocks);
 
         // solve the puzzle
         Solver solver = new Solver(initial);
